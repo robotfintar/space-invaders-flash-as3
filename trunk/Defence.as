@@ -20,11 +20,15 @@
 			}
 		}
 		
-		public function defenceHit(defence, player):void
+		public function defenceHit(defence, bulletSource):void
 		{
 			blocks.forEach(function(block, index){
-				if (player.bulletMC.hitTestObject(block)) {
-					player.deleteBullet();
+				if (bulletSource.bulletMC.hitTestObject(block)) {
+					if (bulletSource.bulletMC is InvaderBullet) {
+						bulletSource.deleteBullet();
+					} else {
+						bulletSource.deleteBullet();
+					}
 					blockHit(block);
 				}
 			});

@@ -54,7 +54,7 @@
 		
 		public function positionPlayer():void
 		{
-			playerMC.x	= swfStage.stageWidth / 2;
+			playerMC.x	= 104;
 		}
 		
 		public function initLivesInReserve():void

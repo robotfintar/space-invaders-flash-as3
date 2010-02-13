@@ -12,18 +12,21 @@
 	
 	public class SpaceInvaders extends MovieClip
 	{
+		private static var _instance:SpaceInvaders;
 		private static const NUMBER_OF_INVADERS:uint				= 55; //55
 		private static const AMOUNT_OF_INVADERS_PER_LINE:uint		= 11; //11
+		private static const INITIAL_INVADERS_SPEED:uint			= 1000;
 		// Objects
-		private var player:Player;
-		private var invaders:Array;
+		public var player:Player;
+		public var invaders:Array;
+		public var invaderBullets:Array;								// Array of Invader bullets currently on screen
 		private var defences:Array;
 		private var spaceship:Spaceship;
 		// States
 		private var level:uint						= 1;
 		private var highestScore:uint				= 0;
 		private var invadersDirection:int			= 12;
-		private var changingDirection:Boolean;							// flag used to skip some code. invaders take 2 steps to change direction
+		private var changingDirection:Boolean;							// Flag used to skip some code. invaders take 2 steps to change direction
 		// Containers
 		public var invadersLayer:MovieClip;
 		private var invadersLayerOffset:uint		= 0;
@@ -31,14 +34,15 @@
 		private var introScreenMC:MovieClip;
 		// Timers
 		private var moveInvadersTimer:Timer;
-		private var invadersSpeed:uint 					= 1000;			// set in milliseconds
+		private var invadersSpeed:uint;									// In milliseconds
 		private var invaderShootTimer:Timer;
-		private var frequencyOfInvaderBullets:Number	= 500;			// how often do we fire the random bullet method?
+		private var frequencyOfInvaderBullets:Number	= 500;			// How often do we fire the random bullet method?
 		private var flashScoreTimer:Timer;
 		private var spaceshipTimer:Timer;
 		
 		public function SpaceInvaders()
 		{
+			_instance = this;
 			introScreen();
 		}
 		
@@ -47,13 +51,14 @@
 			// Clean up if coming from a finished game
 			if (player) {
 				player.deletePlayer();
-				if (player.lives)
-					player.removeExistingLives();
+				if (player.lives) player.removeExistingLives();
 			}
 			if (invaders) invaders.forEach(function(invader, index){
 				invader.deleteInvader();	 
 			});
-			invaders = [];
+			invaders 	= [];
+			invaderBullets		= [];
+			if (defencesLayer) { removeChild(defencesLayer); }
 			
 			currentLivesUI.text	= "0";		// Empty the UI text fields
 			levelLabelTxt.text	= "LEVEL";
@@ -74,15 +79,17 @@
 			
 			player 				= new Player(stage, currentLivesUI);
 			spaceship 			= new Spaceship(stage);
+			invadersSpeed 		= INITIAL_INVADERS_SPEED;
 			levelLabelTxt.text	= "LEVEL";
 			stage.addEventListener(Event.ENTER_FRAME, enterFrameHandler);
+			
+			initDefenses();
 			startNewLevel();
 		}
-		
+		1
 		private function startNewLevel():void
 		{			
 			initUI();
-			initDefenses();
 			initInvaders();
 			initTimers();
 		}
@@ -289,7 +296,7 @@
 			if ((invadersLayer.y + (invadersLayer.height/2)) > (stage.stageHeight/2 - 30))
 				feedbackPos	= 60 + ((invadersLayer.y - 70) / 2); 	// 1/2 way between the scores and the top of the invaders
 			else 
-				feedbackPos = 415 - ((445 - (invadersLayer.y + invadersLayer.height)) / 2);		// 1/2 way between the bottom of the invaders and the green line
+				feedbackPos = 360 - ((360 - (invadersLayer.y + invadersLayer.height)) / 2);		// 1/2 way between the bottom of the invaders and the green line
 			feedback("Game Over", feedbackPos);
 			
 			if (player.score > highestScore) highestScore = player.score;
@@ -307,7 +314,7 @@
 			if (spaceship.inFlight && player.bulletOnScreen) spaceshipHitTest();
 		}
 		
-		private function playerHitCheck():void
+		private function playerHitCheck():void		// First part of this Handler lives in the Bullet class
 		{
 			if (player.playerMC.currentFrame == 2 && !player.playerHit) {	// PlayerMC is moved to frame 2 by the Invader class..
 				
@@ -330,7 +337,15 @@
 						defence.defenceHit(defence, player);
 					}
 				}
-				// check for invaders bullets
+				if (invaderBullets.length > 0) {
+					invaderBullets.forEach(function(invaderBullet){
+						if (invaderBullet) {	
+							if (invaderBullet.bulletMC.hitTestObject(defence.defenceMC)) {
+								defence.defenceHit(defence, invaderBullet);
+							}
+						}
+					});
+				}
 			});
 		}
 		
@@ -369,18 +384,20 @@
 		
 		private function invadersShoot(e:TimerEvent):void
 		{
+			var bullet;
 			// We shoot a bullet on average 1 in every 3 method calls
 			if (Math.random() < 0.333) {
 				var shooters = getShooterInvaders();
 				if (shooters.length > 1) {
 					var rand	= Math.round (Math.random () * (shooters.length - 1));
-					if (rand) 	var key	= shooters[rand];
-					if (key)	invaders[key].shootBullet();
+					var key		= shooters[rand];
+					bullet 		= invaders[key].shootBullet();
 				} else {
 					// last invader
-					if (invaders) invaders[0].shootBullet();
+					bullet 		= invaders[0].shootBullet();
 				}
 			}
+			if (bullet) invaderBullets.push(bullet);
 		}
 		
 		private function spaceshipAppears(e:TimerEvent):void
@@ -425,6 +442,8 @@
 			});
 			return shooterIds;
 		}
+		
+		public static function get instance():SpaceInvaders { return _instance; }
 
 		/*
 		 *

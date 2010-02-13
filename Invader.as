@@ -56,10 +56,10 @@
 			}
 		}
 		
-		public function shootBullet():void
+		public function shootBullet():Object
 		{
 			var bulletObj	= new Bullet(swfStage, invaderMC);
-			bulletObj.shoot();
+			return bulletObj;
 		}
 		
 		public function explode():void

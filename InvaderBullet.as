@@ -28,12 +28,8 @@
 		private function playerHitTest():void
 		{
 			if (bulletMC.hitTestObject(_dc.player.playerMC)) {
-				
-				_dc.moveInvadersTimer.stop();
-				_dc.invaderShootTimer.stop();
-				
 				deleteBullet();
-				_dc.player.playerMC.gotoAndPlay("blowUp");
+				_dc.playerHit();
 			}
 		}
 		

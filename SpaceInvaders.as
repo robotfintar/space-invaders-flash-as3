@@ -293,22 +293,22 @@
 
 		private function enterFrameHandler(e:Event):void
 		{
-			if (invaderBullets.length) playerHitCheck();
 			if (player.bulletOnScreen) invadersHitTest();
 			if (invaderBullets.length || player.bulletOnScreen) 	defencesHitTest();
 			if (spaceship.inFlight && player.bulletOnScreen) 		spaceshipHitTest();
 		}
 		
-		private function playerHitCheck():void		// First part of this Handler lives in the Bullet class
+		public function playerHit():void		// This method called from InvaderBullet
 		{
-			if (player.playerMC.currentFrame == 2 && !player.playerHit) {	// PlayerMC is moved to frame 2 by the Invader class..
-				
-				player.loseALife();
-				initUI();
+			moveInvadersTimer.stop();
+			invaderShootTimer.stop();
+			
+			player.playerMC.gotoAndPlay("blowUp");
+			player.loseALife();
+			initUI();
 
-				if (player.lives == 0) gameOver();
-				else TweenMax.to(player.playerMC, 2, {onComplete:continueGame});	// Dummy tween to create a 2 sec pause
-			};
+			if (player.lives == 0) gameOver();
+			else TweenMax.to(player.playerMC, 2, {onComplete:continueGame});	// Dummy tween to create a 2 sec pause
 		}
 		
 		private function defencesHitTest():void

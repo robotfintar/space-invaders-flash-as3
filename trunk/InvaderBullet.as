@@ -11,7 +11,7 @@
 		public function InvaderBullet(invaderMC:MovieClip)
 		{
 			_dc 			= SpaceInvaders.instance;
-			this.bulletMC	= new InvaderBullet();
+			this.bulletMC	= new InvaderBulletMC();
 			bulletMC.x		= invaderMC.x + invaderMC.parent.x + (invaderMC.width/2);	// TODO: move registration point of alien
 			bulletMC.y		= invaderMC.y + invaderMC.parent.y + (invaderMC.height/2);
 			shoot();

@@ -25,20 +25,19 @@
 		// States
 		private var level:uint						= 1;
 		private var highestScore:uint				= 0;
-		private var invadersDirection:int			= 12;
-		private var changingDirection:Boolean;							// Flag used to skip some code. invaders take 2 steps to change direction
+		private var invadersDirection:int;
+		private var changingDirection:uint;							// Flag used to skip some code. invaders take 2 steps to change direction
 		// Containers
 		public var invadersLayer:MovieClip;
-		private var invadersLayerOffset:uint		= 0;
 		private var defencesLayer:MovieClip;
 		private var introScreenMC:MovieClip;
 		// Timers
 		private var moveInvadersTimer:Timer;
-		private var invadersSpeed:uint;									// In milliseconds
 		private var invaderShootTimer:Timer;
-		private var frequencyOfInvaderBullets:Number	= 500;			// How often do we fire the random bullet method?
-		private var flashScoreTimer:Timer;
 		private var spaceshipTimer:Timer;
+		private var flashScoreTimer:Timer;
+		private var invadersSpeed:uint;									// In milliseconds
+		private var frequencyOfInvaderBullets:Number	= 500;			// How often do we fire the random bullet method?
 		
 		public function SpaceInvaders()
 		{
@@ -56,18 +55,18 @@
 			if (invaders) invaders.forEach(function(invader, index){
 				invader.deleteInvader();	 
 			});
-			invaders 	= [];
+			invaders 			= [];
 			invaderBullets		= [];
 			if (defencesLayer) { removeChild(defencesLayer); }
 			
-			currentLivesUI.text	= "0";		// Empty the UI text fields
-			levelLabelTxt.text	= "LEVEL";
-			currentLevelUI.text = "0";
-			player1ScoreTxt.text = "0000";
+			currentLivesUI.text		= "0";		// Empty the UI text fields
+			levelLabelTxt.text		= "LEVEL";
+			currentLevelUI.text 	= "0";
+			player1ScoreTxt.text 	= "0000";
 			
 			introScreenMC 		= new IntroScreen();		// Add the Info Screen clip
 			introScreenMC.y		= 70;
-			addChild(introScreenMC);
+			addChild( introScreenMC );
 			
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);		// We await instruction...
 		}
@@ -86,7 +85,7 @@
 			initDefenses();
 			startNewLevel();
 		}
-		1
+		
 		private function startNewLevel():void
 		{			
 			initUI();
@@ -106,8 +105,8 @@
 		private function initUI():void
 		{
 			currentLevelUI.text		= level.toString();			
-			var feedbackText		= getChildByName("feedbackUI");
-			setChildIndex(feedbackText, 0);
+			//var feedbackText		= getChildByName("feedbackUI");
+			//setChildIndex(feedbackText, 0);
 		}
 		
 		private function initDefenses():void
@@ -133,13 +132,13 @@
 		 
 		private function initInvaders():void
 		{
-			this.invaders		= new Array();
+			invadersDirection	= 12;
+			invaders			= new Array();
 			
 			invadersLayer		= new MovieClip();
 			invadersLayer.name	= "invadersLayer";
 			invadersLayer.x		= 140;
 			invadersLayer.y		= 100;
-			invadersLayerOffset	= 0;
 			
 			createInvaders();
 			addChild( invadersLayer );
@@ -167,33 +166,34 @@
 					xOffset += 30;
 				}
 			}
+			invaders.sortOn(["col","row"], Array.NUMERIC);
 		}
 		
 		private function moveInvaders(e:TimerEvent):void
 		{
 			/* 	Change direction of invaders at the edges.
-			 *	We use an offset because of how movieclip containers behave when we 
-			 *	remove contained elemnts from the left hand side.
+			 *	We work out the perceived left and right because of how movieclip containers 
+			 *	behave when we remove contained elemnts from the left hand side.
 			 *
 			 *	For more info see -> http://www.actionscript.org/forums/showpost.php3?p=755924&postcount=5
 			 */
-			var perceivedLeft		= invadersLayer.x + invadersLayerOffset;
-			var perceivedRight		= Math.ceil(invadersLayer.x + invadersLayer.width + invadersLayerOffset);
+			var perceivedLeft		= Math.ceil(invadersLayer.x + invaders[0].invaderMC.x);
+			var perceivedRight		= Math.ceil(invadersLayer.x + invaders[invaders.length-1].invaderMC.x);
 			var tweenTime 			= (moveInvadersTimer.delay / 4) / 1000;
 			
-			// We use a changingDirection boolean flag to handle changes of directions (which take 2 timed steps)
-			if ( (perceivedLeft < 25 || perceivedRight > 520) && !changingDirection ) {
+			// We use a changingDirection var to handle changes of directions (which take 2 timed steps)
+			if ( (perceivedLeft < 22 || perceivedRight > 510) && changingDirection > 5 ) {
 				
-				haveInvadersLanded();	// Invaders have landed?
+				haveInvadersLanded();	//? - if so, gameOver()
 				
 				// Move down
 				TweenMax.to(invadersLayer, tweenTime, {y:invadersLayer.y + 15, ease:Circ.easeIn, onComplete:animateInvaders});
+				changingDirection		= 0;
 				invadersDirection 		*= -1;
-				changingDirection		= true;
 			} else {
 				// Move left / right
 				TweenMax.to(invadersLayer, tweenTime, {x:invadersLayer.x + invadersDirection, ease:Circ.easeIn, onComplete:animateInvaders});
-				changingDirection			= false;
+				changingDirection++;
 			}
 		}
 		
@@ -203,37 +203,24 @@
 		}
 		
 		private function removeInvader(deadInvader, index):void
-		{			
+		{
+			// Was the dead invader a shooting alien?
+			// If so pass the shooting power to the alien above his head (wherever possible)
+			if (deadInvader.shooter && index) {
+				if (invaders[index-1].col == deadInvader.col) invaders[index-1].shooter = true;
+			}
+			
 			player.deleteBullet();
 			deadInvader.explode();
 			invaders.splice(index, 1);
 			
-			// Was the dead invader a shooting alien?
-			// If so pass the shooting power to the alien above his head (wherever possible)
-			var key:uint;
-			if (deadInvader.shooter) {
-				invaders.forEach(function(invader, index, arr){
-					if (invader.col == deadInvader.col) key = index;
-				});
-				if (key) invaders[key].shooter = true;
-			}
-			
 			player.increaseScore(deadInvader.points);
 			player1ScoreTxt.text = player.score.toString();
 			
-			// invadersLayer.x never changes.. so we keep a record of the offset of the furthest left invader 
-			invadersLayerOffset = getFurthestLeftInvader();
+			if (!invaders.length) levelCompleted();
 			
-			// Check if level is completed
-			if (invaders.length == 0) {
-				levelCompleted();
-			}
-			
-			// Speed up as more invaders are killed 
-			if (invaders.length % AMOUNT_OF_INVADERS_PER_LINE == 0) {
-				moveInvadersTimer.delay = Math.ceil(moveInvadersTimer.delay * 0.7);
-			}
-			// Last 5? speed up every time
+			// Speed up as a row's worth invaders are killed 
+			if (invaders.length % AMOUNT_OF_INVADERS_PER_LINE == 0) moveInvadersTimer.delay = Math.ceil(moveInvadersTimer.delay * 0.7);
 			if (invaders.length < 5) moveInvadersTimer.delay = Math.ceil(moveInvadersTimer.delay * 0.7);
 		}
 		
@@ -241,8 +228,6 @@
 		{
 			player.deleteBullet()
 			spaceship.explode();
-			
-			// Award points to the player for this kill!
 			player.increaseScore(spaceship.points);
 			player1ScoreTxt.text = player.score.toString();
 		}
@@ -250,10 +235,8 @@
 		private function levelCompleted():void
 		{
 			removeTimers();
-			
 			level++;
 			invadersSpeed -= 50;
-	
 			startNewLevel();
 		}
 
@@ -280,8 +263,10 @@
 		{
 			moveInvadersTimer.stop();
 			moveInvadersTimer.removeEventListener(TimerEvent.TIMER, moveInvaders);
+			
 			invaderShootTimer.stop();
 			invaderShootTimer.removeEventListener(TimerEvent.TIMER, invadersShoot);
+			
 			spaceshipTimer.stop();
 			spaceshipTimer.removeEventListener(TimerEvent.TIMER, spaceshipAppears);
 		}
@@ -291,6 +276,9 @@
 			removeTimers();
 			stage.removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
 			
+			if (player.score > highestScore) highestScore = player.score;
+			highScoreTxt.text = highestScore.toString();
+			
 			// This next chunk of code dynamically works out where the biggest gap on the stage is, to show "Game Over" feedback
 			var feedbackPos:int;
 			if ((invadersLayer.y + (invadersLayer.height/2)) > (stage.stageHeight/2 - 30))
@@ -299,19 +287,16 @@
 				feedbackPos = 360 - ((360 - (invadersLayer.y + invadersLayer.height)) / 2);		// 1/2 way between the bottom of the invaders and the green line
 			feedback("Game Over", feedbackPos);
 			
-			if (player.score > highestScore) highestScore = player.score;
-			highScoreTxt.text = highestScore.toString();
-			
 			// Dummy tween | 3 sec delay with go to intro callback
 			TweenMax.to(feedbackUI, 1, {delay:3, alpha:0, onComplete:introScreen});
 		}
 
 		private function enterFrameHandler(e:Event):void
 		{
-			playerHitCheck();
-			defencesHitTest();
+			if (invaderBullets.length) playerHitCheck();
 			if (player.bulletOnScreen) invadersHitTest();
-			if (spaceship.inFlight && player.bulletOnScreen) spaceshipHitTest();
+			if (invaderBullets.length || player.bulletOnScreen) 	defencesHitTest();
+			if (spaceship.inFlight && player.bulletOnScreen) 		spaceshipHitTest();
 		}
 		
 		private function playerHitCheck():void		// First part of this Handler lives in the Bullet class
@@ -353,9 +338,7 @@
 		{
 			invaders.forEach(function(invader, index) {
 				if (invader) {
-					if (player.bulletMC.hitTestObject(invader.invaderMC)) {
-						removeInvader(invader, index);
-					}
+					if (player.bulletMC.hitTestObject(invader.invaderMC)) removeInvader(invader, index);
 				}
 			});
 		}
@@ -397,7 +380,7 @@
 					bullet 		= invaders[0].shootBullet();
 				}
 			}
-			if (bullet) invaderBullets.push(bullet);
+			if (bullet) invaderBullets.push(bullet);	// if a bullet is fired, we add it to our bullets array
 		}
 		
 		private function spaceshipAppears(e:TimerEvent):void
@@ -422,16 +405,6 @@
 			feedbackUI.text		= message;
 			var ypos = (!ypos) ? stage.stageHeight/2 : ypos;
 			TweenMax.to(feedbackUI, 1, {alpha:1, y:ypos, ease:Bounce.easeOut});
-		}
-		
-		// Use this to calculate invadersLayerOffset, every time an invader is removed
-		public function getFurthestLeftInvader():uint
-		{
-			var xVal:uint = 25 * AMOUNT_OF_INVADERS_PER_LINE;
-			for (var i=0, len=invaders.length; i<len; i++) {
-				xVal = (invaders[i].invaderMC.x < xVal) ? invaders[i].invaderMC.x : xVal;
-			}
-			return xVal;
 		}
 		
 		private function getShooterInvaders():Array					// Returns an array of array keys for all invaders instructed to shoot
@@ -462,7 +435,6 @@
 			trace('-----');
 			trace('Invaders left: '+invaders.length);
 			trace('Timer speed: '+moveInvadersTimer.delay);
-			trace('Invaders layer offset: '+invadersLayerOffset);
 			trace('Amount to move: '+invadersDirection);
 			//trace('perceivedRight (> 520?): '+perceivedRight);
 			//trace('perceivedLeft (< 25?): '+perceivedLeft);

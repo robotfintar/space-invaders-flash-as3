@@ -32,6 +32,7 @@
 			
 			this.playerMC		= new PlayerMC();
 			playerMC.name		= "playerMC";
+			playerMC.x			= 0;
 			
 			initPlayer();
 		}
@@ -40,7 +41,6 @@
 		{
 			playerHit 	= false;
 			
-			// Place the defender on the stage
 			playerMC.y	= swfStage.stageHeight - 80;
 			positionPlayer();
 			swfStage.addChild( playerMC );
@@ -54,7 +54,7 @@
 		
 		public function positionPlayer():void
 		{
-			playerMC.x	= 104;
+			TweenMax.to(playerMC, 1, {x:104, ease:Bounce.easeOut});
 		}
 		
 		public function initLivesInReserve():void
@@ -150,9 +150,7 @@
 		private function enterFrameHandler(event:Event):void
 		{
 			if (!playerHit) {	
-				// Move right
 				if (rightArrow && (playerMC.x < (swfStage.stageWidth - playerMC.width))) 	playerMC.x += PLAYER_SPEED;
-				// Move left
 				if (leftArrow && (playerMC.x > (0 + playerMC.width))) 						playerMC.x -= PLAYER_SPEED;
 			}
 			if (bulletOnScreen) moveBullet();

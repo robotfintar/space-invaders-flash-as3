@@ -3,7 +3,7 @@
 	import flash.geom.Point;
 	import com.greensock.*;									// Greensock tweening library	-> see http://blog.greensock.com/
 	import com.greensock.easing.*;
-	import Bullet;
+	import InvaderBullet;
 	
 	public class Invader extends MovieClip
 	{
@@ -58,7 +58,7 @@
 		
 		public function shootBullet():Object
 		{
-			var bulletObj	= new Bullet(swfStage, invaderMC);
+			var bulletObj	= new InvaderBullet(invaderMC);
 			return bulletObj;
 		}
 		

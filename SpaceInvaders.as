@@ -17,9 +17,9 @@
 		private static const AMOUNT_OF_INVADERS_PER_LINE:uint		= 11; //11
 		private static const INITIAL_INVADERS_SPEED:uint			= 1000;
 		// Objects
-		public var player:Player;
-		public var invaders:Array;
-		public var invaderBullets:Array;								// Array of Invader bullets currently on screen
+		public var  player:Player;
+		public var  invaders:Array;
+		public var  invaderBullets:Array;								// Array of Invader bullets currently on screen
 		private var defences:Array;
 		private var spaceship:Spaceship;
 		// States
@@ -28,12 +28,12 @@
 		private var invadersDirection:int;
 		private var changingDirection:uint;							// Flag used to skip some code. invaders take 2 steps to change direction
 		// Containers
-		public var invadersLayer:MovieClip;
+		public var  invadersLayer:MovieClip;
 		private var defencesLayer:MovieClip;
 		private var introScreenMC:MovieClip;
 		// Timers
-		private var moveInvadersTimer:Timer;
-		private var invaderShootTimer:Timer;
+		public var  moveInvadersTimer:Timer;
+		public var  invaderShootTimer:Timer;
 		private var spaceshipTimer:Timer;
 		private var flashScoreTimer:Timer;
 		private var invadersSpeed:uint;									// In milliseconds
@@ -87,7 +87,7 @@
 		}
 		
 		private function startNewLevel():void
-		{			
+		{
 			initUI();
 			initInvaders();
 			initTimers();
@@ -302,9 +302,6 @@
 		private function playerHitCheck():void		// First part of this Handler lives in the Bullet class
 		{
 			if (player.playerMC.currentFrame == 2 && !player.playerHit) {	// PlayerMC is moved to frame 2 by the Invader class..
-				
-				moveInvadersTimer.stop();
-				invaderShootTimer.stop();
 				
 				player.loseALife();
 				initUI();

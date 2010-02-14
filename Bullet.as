@@ -15,7 +15,6 @@
 			this.swfStage		= _dc.stage;
 			
 			this.bulletMC		= new InvaderBullet();
-			bulletMC.name		= "bulletClip";
 			bulletMC.x			= invaderMC.x + invaderMC.parent.x + (invaderMC.width/2);	// TODO: move registration point of alien
 			bulletMC.y			= invaderMC.y + invaderMC.parent.y + (invaderMC.height/2);
 			

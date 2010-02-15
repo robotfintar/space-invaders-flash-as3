@@ -8,19 +8,19 @@
 	
 	public class Player extends MovieClip
 	{
-		private static const PLAYER_SPEED:uint				= 5;
-		private static const BULLET_SPEED:uint				= 8;
+		private static const PLAYER_SPEED:uint	= 5;
+		private static const BULLET_SPEED:uint	= 8;
 		// PROPERTIES
-		private var swfStage:Stage;
-		public var playerMC:MovieClip;
-		public var bulletMC:MovieClip;
+		private var swfStage:Stage; 
+ 		public var  playerMC:MovieClip;
+		public var  bulletMC:MovieClip;
 		// States
-		public var lives:uint;
+		public var  lives:uint;
 		private var currentLivesUI:TextField;
-		public var score:uint;
-		public var bulletOnScreen:Boolean;
-		public var playerHit:Boolean;
-		public var extraLifeAt:uint		= 5000;
+		public var  score:uint;
+		public var  bulletOnScreen:Boolean;
+		public var  playerHit:Boolean;
+		public var  extraLifeEvery:uint		= 5000;
 		// Controls
 		private var rightArrow:Boolean;
 		private var leftArrow:Boolean;
@@ -120,13 +120,13 @@
 		public function increaseScore(points:uint):void
 		{
 			score += points;
-			if (score > extraLifeAt) extraLife(); 
+			if (score > extraLifeEvery) extraLife(); 
 		}
 		
 		private function extraLife():void
 		{
 			lives++;
-			extraLifeAt += 5000;
+			extraLifeEvery += 5000;
 			initLivesInReserve();
 		}
 		

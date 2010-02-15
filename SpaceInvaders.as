@@ -241,7 +241,7 @@
 			removeTimers();
 			level++;
 			invadersSpeed -= 50;
-			if (invadersLayerYPos < 220) invadersLayerYPos	+= 30;
+			if (invadersLayerYPos < 220) invadersLayerYPos	+= 30;		// Start further down for next level
 			startNewLevel();
 		}
 

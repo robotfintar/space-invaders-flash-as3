@@ -278,7 +278,7 @@
 			spaceshipTimer.removeEventListener(TimerEvent.TIMER, spaceshipAppears);
 		}
 		
-		private function gameOver():void
+		private function gameOver(message:String):void
 		{
 			removeTimers();
 			stage.removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
@@ -310,13 +310,11 @@
 			moveInvadersTimer.stop();
 			invaderShootTimer.stop();
 			
-			// TODO : need to disable all other stray invader bullets on the screen. Delete them?
-			
 			player.playerMC.gotoAndPlay("blowUp");
 			player.loseALife();
 			initUI();
 
-			if (player.lives == 0) gameOver();
+			if (player.lives == 0) gameOver(null);
 			else TweenMax.to(player.playerMC, 2, {onComplete:continueGame});	// Dummy tween to create a 2 sec pause
 		}
 		
@@ -362,7 +360,7 @@
 			{
 				player.playerHit = true;
 				player.playerMC.gotoAndPlay("blowUp");		
-				gameOver();	// TODO: need to provide game over feedback "invaders have landed|"
+				gameOver("Invaders have landed");	// TODO: need to provide game over feedback "invaders have landed|"
 			}
 		}
 		
@@ -375,7 +373,7 @@
 		{
 			var bullet;
 			// We shoot a bullet on average 1 in every 3 method calls
-			if (Math.random() < 0.333) {
+			if (Math.random() < 0.3) {	// 0.3
 				var shooters = getShooterInvaders();
 				if (shooters.length > 1) {
 					var rand	= Math.round (Math.random () * (shooters.length - 1));

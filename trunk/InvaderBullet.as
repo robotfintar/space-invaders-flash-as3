@@ -27,9 +27,11 @@
 		
 		private function playerHitTest():void
 		{
-			if (bulletMC.hitTestObject(_dc.player.playerMC)) {
-				deleteBullet();
-				_dc.playerHit();	// Fire the method in the Document Class
+			if (!_dc.player.playerHit) {	// Don't fire if player is currently blowing up from previous hit!
+				if (bulletMC.hitTestObject(_dc.player.playerMC)) {
+					deleteBullet();
+					_dc.playerHit();	// Fire the method in the Document Class
+				}
 			}
 		}
 		

@@ -15,9 +15,9 @@
 		public var playerMC:MovieClip;
 		public var bulletMC:MovieClip;
 		// States
-		public var lives:uint			= 3;
+		public var lives:uint;
 		private var currentLivesUI:TextField;
-		public var score:uint			= 0;
+		public var score:uint;
 		public var bulletOnScreen:Boolean;
 		public var playerHit:Boolean;
 		public var extraLifeAt:uint		= 5000;
@@ -29,6 +29,8 @@
 		{
 			this.swfStage		= swfStage;
 			this.currentLivesUI = currentLivesUI;
+			this.lives			= 3;
+			this.score			= 0;
 			
 			this.playerMC		= new PlayerMC();
 			playerMC.name		= "playerMC";
@@ -54,7 +56,7 @@
 		
 		public function positionPlayer():void
 		{
-			TweenMax.to(playerMC, 1, {x:104, ease:Bounce.easeOut});
+			TweenMax.to(this.playerMC, 1, {x:104, ease:Bounce.easeOut});
 		}
 		
 		public function initLivesInReserve():void
@@ -138,8 +140,8 @@
 		public function startNewLife():void
 		{
 			playerMC.gotoAndStop(1);
-			positionPlayer();
 			playerHit = false;
+			positionPlayer();
 		}
 		
 		public function deletePlayer():void

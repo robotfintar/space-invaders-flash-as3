@@ -21,8 +21,8 @@
 		{
 			_dc.addChild( bulletMC );
 			// Tween time is dynamic, based upon how far the bullet has to go
-			var distance = (_dc.stage.stageHeight-60) - bulletMC.y;	
-			TweenMax.to( bulletMC, distance/212, {y:_dc.stage.stageHeight-60, ease:Linear.easeNone, onUpdate:playerHitTest, onComplete:deleteBullet} );
+			var distance = 440 - bulletMC.y;	
+			TweenMax.to( bulletMC, distance/212, {y:440, ease:Linear.easeNone, onUpdate:playerHitTest, onComplete:deleteBullet} );
 		}
 		
 		private function playerHitTest():void

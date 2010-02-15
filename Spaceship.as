@@ -22,12 +22,14 @@
 			inFlight	= true;
 			
 			var xDestination:int;
+			var left	= -spaceshipMC.width - 2;
+			var right	= swfStage.width + spaceshipMC.width  + 2;
 			if (Math.random() < 0.5) {
-				spaceshipMC.x	= swfStage.stageWidth + 50;
-				xDestination 	= -50;
+				spaceshipMC.x	= right;
+				xDestination 	= left;
 			} else {
-				spaceshipMC.x	= -50;
-				xDestination 	= swfStage.stageWidth + 50;
+				spaceshipMC.x	= left;
+				xDestination 	= right;
 			}
 			spaceshipMC.y		= 80;
 			swfStage.addChild(spaceshipMC);

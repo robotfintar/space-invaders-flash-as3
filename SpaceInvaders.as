@@ -44,6 +44,8 @@
 		public function SpaceInvaders()
 		{
 			_instance = this;
+			stage.align 	= StageAlign.TOP_LEFT;
+			stage.scaleMode = StageScaleMode.SHOW_ALL;
 			introScreen();
 		}
 		
@@ -354,7 +356,7 @@
 		
 		private function haveInvadersLanded():void
 		{
-			if ( Math.ceil(invadersLayer.y + invadersLayer.height) > stage.stageHeight - 120)
+			if ( Math.ceil(invadersLayer.y + invadersLayer.height) > 370)
 			{
 				player.playerHit = true;
 				player.playerMC.gotoAndPlay("blowUp");		

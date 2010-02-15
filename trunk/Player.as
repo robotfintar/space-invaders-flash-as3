@@ -35,6 +35,7 @@
 			this.playerMC		= new PlayerMC();
 			playerMC.name		= "playerMC";
 			playerMC.x			= 0;
+			playerMC.y			= 420;
 			
 			initPlayer();
 		}
@@ -42,8 +43,6 @@
 		public function initPlayer():void
 		{
 			playerHit 	= false;
-			
-			playerMC.y	= swfStage.stageHeight - 80;
 			positionPlayer();
 			swfStage.addChild( playerMC );
 			
@@ -139,9 +138,10 @@
 		
 		public function startNewLife():void
 		{
-			playerMC.gotoAndStop(1);
-			playerHit = false;
-			positionPlayer();
+			TweenMax.to(this.playerMC, 1, {x:104, ease:Bounce.easeOut, onComplete:function(){
+				playerMC.gotoAndStop(1);
+				playerHit = false;														
+			}});
 		}
 		
 		public function deletePlayer():void
@@ -152,8 +152,8 @@
 		private function enterFrameHandler(event:Event):void
 		{
 			if (!playerHit) {	
-				if (rightArrow && (playerMC.x < (swfStage.stageWidth - playerMC.width))) 	playerMC.x += PLAYER_SPEED;
-				if (leftArrow && (playerMC.x > (0 + playerMC.width))) 						playerMC.x -= PLAYER_SPEED;
+				if (rightArrow && (playerMC.x < 520)) 	playerMC.x += PLAYER_SPEED;
+				if (leftArrow && (playerMC.x > 28)) 	playerMC.x -= PLAYER_SPEED;
 			}
 			if (bulletOnScreen) moveBullet();
 		}

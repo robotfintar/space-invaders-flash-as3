@@ -7,10 +7,12 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-    $('#flash_app').flash(
+    var h = ( $(window).height() < 500 ) ?  500 : $(window).height();
+	var w = h*1.1;
+	$('#flash_app').flash(
         { src: 'SpaceInvaders.swf',
-          width: 550,
-          height: 500,
+          width: w,
+          height: h,
 		},
         { version: 9 }
     );
@@ -18,15 +20,13 @@ $(document).ready(function(){
 </script>
 
 <style>
-body		{ margin:0; padding:0; }
-#flash_app 	{margin:0 auto; text-align:center;}
+body		{ margin:0; padding:0; background:#000; }
+#flash_app 	{ margin:0 auto; text-align:center; }
 </style>
 
 
 </head>
-<body bgcolor="#000000">
-
+<body>
 	<div id="flash_app"></div>
-
 </body>
 </html>

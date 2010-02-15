@@ -6,13 +6,13 @@
 	public class InvaderBullet extends Sprite
 	{
 		private var _dc:SpaceInvaders;				// Instance of the Document Class
-		public var bulletMC:MovieClip;
+		public var  bulletMC:MovieClip;
 		
 		public function InvaderBullet(invaderMC:MovieClip)
 		{
 			_dc 			= SpaceInvaders.instance;
 			this.bulletMC	= new InvaderBulletMC();
-			bulletMC.x		= invaderMC.x + invaderMC.parent.x + (invaderMC.width/2);	// TODO: move registration point of alien
+			bulletMC.x		= invaderMC.x + invaderMC.parent.x + (invaderMC.width/2);
 			bulletMC.y		= invaderMC.y + invaderMC.parent.y + (invaderMC.height/2);
 			shoot();
 		}
@@ -29,7 +29,7 @@
 		{
 			if (bulletMC.hitTestObject(_dc.player.playerMC)) {
 				deleteBullet();
-				_dc.playerHit();
+				_dc.playerHit();	// Fire the method in the Document Class
 			}
 		}
 		
@@ -37,16 +37,13 @@
 		{
 			TweenMax.killTweensOf(bulletMC);
 			
-			// Remove this bullet from the document class invaderBullets array
-			var toDelete;
+			var toDelete; // Remove this bullet from the document class invaderBullets array
 			_dc.invaderBullets.forEach(function(_dcBullet, index){
-				if (_dcBullet.bulletMC === bulletMC) toDelete = index;
+				if (_dcBullet.bulletMC === this.bulletMC) toDelete = index;
 			});
 			_dc.invaderBullets.splice(toDelete, 1);
 			
-			if (bulletMC.parent) {
-				_dc.removeChild(bulletMC);
-			}
+			if (bulletMC.parent) _dc.removeChild(bulletMC);
 		}
 	}
 }

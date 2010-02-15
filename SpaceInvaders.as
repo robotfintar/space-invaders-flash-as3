@@ -12,23 +12,25 @@
 	
 	public class SpaceInvaders extends MovieClip
 	{
-		private static var _instance:SpaceInvaders;
+		private static var   _instance:SpaceInvaders;
 		private static const NUMBER_OF_INVADERS:uint				= 55; //55
 		private static const AMOUNT_OF_INVADERS_PER_LINE:uint		= 11; //11
 		private static const INITIAL_INVADERS_SPEED:uint			= 1000;
+		private static const INITIAL_INVADERS_YPOS:uint				= 100;
 		// Objects
 		public var  player:Player;
 		public var  invaders:Array;
-		public var  invaderBullets:Array;								// Array of Invader bullets currently on screen
+		public var  invaderBullets:Array;			// Array of Invader bullets currently on screen
 		private var defences:Array;
 		private var spaceship:Spaceship;
 		// States
-		private var level:uint						= 1;
-		private var highestScore:uint				= 0;
+		private var level:uint;
+		private var highestScore:uint;
 		private var invadersDirection:int;
-		private var changingDirection:uint;							// Flag used to skip some code. invaders take 2 steps to change direction
+		private var changingDirection:uint;			// Count steps of invaders movement. Used as a flag when changing directions
 		// Containers
 		public var  invadersLayer:MovieClip;
+		private var invadersLayerYPos:uint;
 		private var defencesLayer:MovieClip;
 		private var introScreenMC:MovieClip;
 		// Timers
@@ -61,6 +63,7 @@
 			
 			currentLivesUI.text		= "0";		// Empty the UI text fields
 			levelLabelTxt.text		= "LEVEL";
+			level					= 1;
 			currentLevelUI.text 	= "0";
 			player1ScoreTxt.text 	= "0000";
 			
@@ -79,6 +82,7 @@
 			player 				= new Player(stage, currentLivesUI);
 			spaceship 			= new Spaceship(stage);
 			invadersSpeed 		= INITIAL_INVADERS_SPEED;
+			invadersLayerYPos	= INITIAL_INVADERS_YPOS;
 			levelLabelTxt.text	= "LEVEL";
 			stage.addEventListener(Event.ENTER_FRAME, enterFrameHandler);
 			
@@ -138,7 +142,7 @@
 			invadersLayer		= new MovieClip();
 			invadersLayer.name	= "invadersLayer";
 			invadersLayer.x		= 140;
-			invadersLayer.y		= 100;
+			invadersLayer.y		= invadersLayerYPos;
 			
 			createInvaders();
 			addChild( invadersLayer );
@@ -237,6 +241,7 @@
 			removeTimers();
 			level++;
 			invadersSpeed -= 50;
+			if (invadersLayerYPos < 220) invadersLayerYPos	+= 30;
 			startNewLevel();
 		}
 

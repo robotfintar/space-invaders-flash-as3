@@ -9,12 +9,12 @@
 	{
 		private var swfStage:Stage;
 		private var invadersLayer:MovieClip;
-		public var invaderMC:MovieClip;
-		public var points:uint;
-		public var row:uint;
-		public var col:uint;
-		public var shooter:Boolean;
-		public var bulletMC:MovieClip;
+		public var  invaderMC:MovieClip;
+		public var  points:uint;
+		public var  row:uint;
+		public var  col:uint;
+		public var  shooter:Boolean;
+		public var  bulletMC:MovieClip;
 		
 		public function Invader(swfStage:Stage, row:uint, col:uint, invadersLayer:MovieClip)
 		{

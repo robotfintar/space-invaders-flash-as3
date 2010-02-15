@@ -288,10 +288,10 @@
 			
 			// This next chunk of code dynamically works out where the biggest gap on the stage is, to show "Game Over" feedback
 			var feedbackPos:int;
-			if ((invadersLayer.y + (invadersLayer.height/2)) > (stage.stageHeight/2 - 30))
+			if ((invadersLayer.y + (invadersLayer.height/2)) > 220)
 				feedbackPos	= 60 + ((invadersLayer.y - 70) / 2); 	// 1/2 way between the scores and the top of the invaders
 			else 
-				feedbackPos = 360 - ((360 - (invadersLayer.y + invadersLayer.height)) / 2);		// 1/2 way between the bottom of the invaders and the green line
+				feedbackPos = 347 - ((360 - (invadersLayer.y + invadersLayer.height)) / 2);		// 1/2 way between the bottom of the invaders and the green line
 			feedback("Game Over", feedbackPos);
 			
 			// Dummy tween | 3 sec delay with go to intro callback
@@ -309,6 +309,8 @@
 		{
 			moveInvadersTimer.stop();
 			invaderShootTimer.stop();
+			
+			// TODO : need to disable all other stray invader bullets on the screen. Delete them?
 			
 			player.playerMC.gotoAndPlay("blowUp");
 			player.loseALife();
@@ -360,7 +362,7 @@
 			{
 				player.playerHit = true;
 				player.playerMC.gotoAndPlay("blowUp");		
-				gameOver();
+				gameOver();	// TODO: need to provide game over feedback "invaders have landed|"
 			}
 		}
 		

@@ -3,6 +3,7 @@
 	import flash.events.*;
 	import flash.text.TextField;
 	import flash.utils.Timer;
+	import flash.media.Sound;
 	import com.greensock.*;				// Greensock tweening library	-> see http://blog.greensock.com/
 	import com.greensock.easing.*;
 	import Player;						// Custom application classes
@@ -21,6 +22,7 @@
 		public var  player:Player;
 		public var  invaders:Array;
 		public var  invaderBullets:Array;			// Array of Invader bullets currently on screen
+		private var invadersSoundStep:uint;
 		private var defences:Array;
 		private var spaceship:Spaceship;
 		// States
@@ -138,6 +140,7 @@
 		 
 		private function initInvaders():void
 		{
+			invadersSoundStep	= 1;
 			invadersDirection	= 12;
 			invaders			= new Array();
 			
@@ -177,6 +180,16 @@
 		
 		private function moveInvaders(e:TimerEvent):void
 		{
+			switch (invadersSoundStep) {
+				case 1: break;
+				case 2: break;
+				case 3: break;
+				case 4: break;
+			}
+			(invadersSoundStep < 4) ? invadersSoundStep++ : invadersSoundStep = 1;
+			var snd:Sound = new MoveInvader1();
+			snd.play();
+			
 			/* 	Change direction of invaders at the edges.
 			 *	We work out the perceived left and right because of how movieclip containers 
 			 *	behave when we remove contained elemnts from the left hand side.

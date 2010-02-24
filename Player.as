@@ -3,6 +3,7 @@
 	import flash.events.*;
 	import flash.ui.Keyboard;
 	import flash.text.TextField;
+	import flash.media.Sound;
 	import com.greensock.*;						// Greensock tweening library	-> see http://blog.greensock.com/
 	import com.greensock.easing.*;
 	
@@ -88,11 +89,15 @@
 		private function shootBullet():void
 		{
 			if (!playerHit) {
+				var snd:Sound = new PlayerShootWav();
+				snd.play();
+				
 				bulletMC			= new BulletMC();
 				bulletMC.name		= "bulletMC";
 				bulletMC.x			= playerMC.x;
 				bulletMC.y			= playerMC.y;
 				swfStage.addChild( bulletMC );
+				
 				bulletOnScreen 		= true;
 			}
 		}

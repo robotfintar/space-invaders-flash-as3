@@ -1,5 +1,6 @@
 ﻿package {
 	import flash.display.*;
+	import flash.media.Sound;
 	import com.greensock.*;									// Greensock tweening library	-> see http://blog.greensock.com/
 	import com.greensock.easing.*;
 	
@@ -44,6 +45,9 @@
 		
 		public function explode():void
 		{
+			var snd:Sound = new SpaceshipHitWav();
+			snd.play();
+			
 			var explosion	= new SpaceshipExplosion();
 			explosion.x		= spaceshipMC.x;
 			explosion.y		= spaceshipMC.y;

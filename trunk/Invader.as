@@ -1,6 +1,7 @@
 ﻿package {
 	import flash.display.*;
 	import flash.geom.Point;
+	import flash.media.Sound;
 	import com.greensock.*;									// Greensock tweening library	-> see http://blog.greensock.com/
 	import com.greensock.easing.*;
 	import InvaderBullet;
@@ -71,6 +72,9 @@
 			invadersLayer.addChild(explosion);
 			TweenMax.from(explosion, 0.2, {scaleX:0, scaleY:0});
 			TweenMax.to(explosion, 0.6, {delay:0.05, alpha:0, onComplete:function(){invadersLayer.removeChild(explosion);}});
+			
+			var snd:Sound = new InvaderHitWav();
+			snd.play();
 			
 			invadersLayer.removeChild(invaderMC);
 		}

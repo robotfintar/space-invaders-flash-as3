@@ -180,14 +180,14 @@
 		
 		private function moveInvaders(e:TimerEvent):void
 		{
+			var snd:Sound;
 			switch (invadersSoundStep) {
-				case 1: break;
-				case 2: break;
-				case 3: break;
-				case 4: break;
+				case 1: snd = new MoveInvader1(); break;
+				case 2: snd = new MoveInvader2(); break;
+				case 3: snd = new MoveInvader3(); break;
+				case 4: snd = new MoveInvader4(); break;
 			}
 			(invadersSoundStep < 4) ? invadersSoundStep++ : invadersSoundStep = 1;
-			var snd:Sound = new MoveInvader1();
 			snd.play();
 			
 			/* 	Change direction of invaders at the edges.
